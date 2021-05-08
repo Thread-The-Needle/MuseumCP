@@ -12,9 +12,11 @@ public class TimeStamp implements Runnable{
 	public boolean tickerCounter;
 	public boolean museumCounter;
 	public DecimalFormat fd;
+	public DecimalFormat ft;
 	
 	public TimeStamp() {
 		this.fd = new DecimalFormat("0000");
+		this.ft = new DecimalFormat("00");
 		this.openSale = 480;
 		this.closedSale = 1020;
 		this.openMuseum = 540;

@@ -15,13 +15,17 @@ public class Main {
 		ExecutorService executor = Executors.newFixedThreadPool(6);
 		TimeStamp ts = new TimeStamp();
 		TicketCounter tk = new TicketCounter(ts);
-		Enter et = new Enter(ts, "NE");
-		Exit ex = new Exit(ts,"EE");
+		Enter etn = new Enter(ts, "NE");
+		Enter ets = new Enter(ts, "SE");
+		Exit exe = new Exit(ts,"EE");
+		Exit exw = new Exit(ts,"WE");
 
 		executor.execute((Runnable) ts);
 		executor.execute((Runnable) tk);
-		executor.execute((Runnable) et);
-		executor.execute((Runnable) ex);
+		executor.execute((Runnable) etn);
+		executor.execute((Runnable) ets);
+		executor.execute((Runnable) exe);
+		executor.execute((Runnable) exw);
 		executor.shutdown();
 	}
 }

@@ -1,7 +1,6 @@
 package main;
 
 import java.util.Random;
-import java.util.concurrent.locks.Condition;
 
 public class Enter implements Runnable{
 	String gate;
@@ -28,9 +27,10 @@ public class Enter implements Runnable{
 		}
 		
 		String id = ts.fd.format(visitor.id);
+		String hr = ts.ft.format(ts.timeStamp/60);
+		String min = ts.ft.format(ts.timeStamp%60);
 		
-		ts.msg(ts.timeStamp);
-		System.out.println(" T" + id + " entered through Turnstile "+ 
+		System.out.println("["+hr+":"+min+"]"+" T" + id + " entered through Turnstile "+ 
 		gate + turnstile + ". Stay for " + visitor.duration + " minutes");
 		
 		visitor.exitTime = ts.timeStamp + visitor.duration;
@@ -43,16 +43,11 @@ public class Enter implements Runnable{
 			if(ts.museumCounter) {
 				try {
 					enter();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				} catch (InterruptedException e) {}
 			}
 			try {
 	            Thread.sleep(100);
-	        } catch (InterruptedException e) {
-	            e.printStackTrace();
-	        }
+	        } catch (InterruptedException e) {}
 		}
 	}
 

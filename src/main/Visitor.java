@@ -1,7 +1,5 @@
 package main;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 public class Visitor implements Comparable<Visitor>{
 	public int id;
     public int time;
