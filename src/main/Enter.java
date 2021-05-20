@@ -9,7 +9,7 @@ public class Enter implements Runnable {
 	private String gate;
 	private Lock lock;
 	private int index = 0;
-	private int maxVisitor = 95;
+	private int maxVisitor = 94;
 	private int visitorMuseum;
 
 	Turnstile turnstile = new Turnstile();
@@ -67,7 +67,7 @@ public class Enter implements Runnable {
 				lock.unlock();
 			}
 		}
-		ts.msg(ts.timeStamp, " Museum entrance" + gate + " counter closed");
+		ts.msg(ts.timeStamp, " Museum entrance " + gate + " counter closed");
 	}
 
 }

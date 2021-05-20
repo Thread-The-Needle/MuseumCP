@@ -70,15 +70,14 @@ public class Exit implements Runnable {
 				if (ts.timeStamp >= ts.openMuseum && !Main.ticketsEntered.isEmpty()) {
 					exit();
 				}
-				int ran = new Random().nextInt(4) + 1;
-				int ran2 = new Random().nextInt(100) + 1;
+				int ran = new Random().nextInt(3) + 1;
+				int ran2 = new Random().nextInt(200) + 1;
 				Thread.sleep((100 * ran + ran2));
 			} catch (InterruptedException e) {
 			} finally {
 				lock.unlock();
 			}
 		}
-		System.out.println("Visitors in Museum: "+ (Main.visitorMuseum.get() - 1));
 		ts.msg(ts.timeStamp, " Museum exit " + gate + " counter closed");
 	}
 
