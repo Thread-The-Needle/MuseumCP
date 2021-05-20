@@ -12,32 +12,29 @@ public class TimeStamp implements Runnable{
 	public boolean tickerCounter;
 	public boolean museumCounter;
 	public DecimalFormat fd;
-	public DecimalFormat ft;
+
 	
 	public TimeStamp() {
 		this.fd = new DecimalFormat("0000");
-		this.ft = new DecimalFormat("00");
 		this.openSale = 480;
 		this.closedSale = 1020;
 		this.openMuseum = 540;
 		this.closedMuseum =1080;
 		this.timeStamp =0;
-		this.tickerCounter = false;
-		this.museumCounter = false;
+		this.tickerCounter = true;
+		this.museumCounter = true;
 	}
 	
 	@Override
 	public void run() {
 		for(int i = openSale; i<=closedMuseum; i++) {
 			timeStamp = i;
-			if(timeStamp>=openSale && timeStamp<=closedSale ) {
-				tickerCounter = true;
-			}else {
+
+			if(timeStamp>=closedSale){
 				tickerCounter = false;
 			}
-			if(timeStamp>=openMuseum && timeStamp<=closedMuseum ) {
-				museumCounter = true;
-			}else {
+			
+			if(timeStamp>=closedMuseum){
 				museumCounter = false;
 			}
 
@@ -48,9 +45,8 @@ public class TimeStamp implements Runnable{
 		
 	}
 	
-	public void msg(int m) {
-		System.out.printf("[%02d:%02d]", m/60, m%60);
+	public void msg(int m, String t) {
+		System.out.printf("[%02d:%02d]"+t+"\n", m/60, m%60 );
 	}
 
-	
 }

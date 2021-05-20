@@ -4,11 +4,14 @@ import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
 	
-	static LinkedList<Visitor> visitors = new LinkedList<>();
-	static PriorityBlockingQueue<Visitor> ticketsEntered = new PriorityBlockingQueue<>();
+	static LinkedList<Ticket> groupTicket = new LinkedList<>();
+	static PriorityBlockingQueue<Ticket> ticketsEntered = new PriorityBlockingQueue<>();
+	static volatile AtomicInteger counter = new AtomicInteger(1);
+	static volatile AtomicInteger visitorMuseum = new AtomicInteger(1);
 	
 	
 	public static void main(String[] args) throws InterruptedException {

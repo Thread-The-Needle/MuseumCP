@@ -1,51 +1,71 @@
 package main;
 
-
+import java.text.DecimalFormat;
+import java.util.LinkedList;
 import java.util.Random;
 
-public class TicketCounter implements Runnable{
-	
+public class TicketCounter implements Runnable {
+
 	private Integer ticketSold;
-	TimeStamp ts; 
-	
+	private String id;
+	private int ranVisitor;
+	private int ranTime;
+	private int duration;
+	// private LinkedList<Visitor> ticket;
+	private LinkedList<String> ticketID;
+	private String groupID;
+
+	private DecimalFormat fd = new DecimalFormat("0000");
+
+	TimeStamp ts;
+
 	public TicketCounter(TimeStamp time) {
 		this.ticketSold = 0;
 		this.ts = time;
 	}
-	public void saleTicket() throws InterruptedException {
-		
-		int ranVisitor = new Random().nextInt(4) + 1;
-		int ranTime = new Random().nextInt(4);
-		ts.msg(ts.timeStamp);
-		System.out.printf(" Tickets ");
-		
-		int duration = new Random().nextInt(101) + 50;
-		
+
+	public synchronized void saleTicket() throws InterruptedException {
+
+		// ticket = new LinkedList<>();
+		ticketID = new LinkedList<>();
+
+		ranVisitor = new Random().nextInt(4) + 1;
+		ranTime = new Random().nextInt(4) + 1;
+
+		duration = new Random().nextInt(101) + 50;
+
+		// if (ts.timeStamp >= 930) {
+		// 	if (duration >= (ts.closedMuseum - ts.timeStamp)) {
+		// 		duration = ts.closedMuseum - ts.timeStamp;
+		// 	} else
+		// 		duration = new Random().nextInt(ts.closedMuseum - ts.timeStamp - 10);
+		// }
+
 		for (int i = 0; i < ranVisitor; i++) {
 			ticketSold++;
-			System.out.printf("T%04d, " ,ticketSold);
-			Main.visitors.add(new Visitor(ticketSold,ts.timeStamp, duration));
+			id = "T" + fd.format(ticketSold);
+			ticketID.add(id);
+			// ticket.add(new Visitor(id, ts.timeStamp, duration));
 		}
-		System.out.println("sold");
-		Thread.sleep((ranTime*300));
+
+		Main.groupTicket.add(new Ticket(ticketID, ts.timeStamp, duration));
+		groupID = Main.groupTicket.getLast().ticketID().replace("[", "").replace("]", "");
+
+		ts.msg(ts.timeStamp, (ranVisitor == 1 ? " Ticket " : " Tickets ") + groupID + " sold");
+		// System.out.println(Main.groupTicket.getLast().stringVisitor());
+		Thread.sleep((ranTime * 300));
 	}
-	
-	
+
 	@Override
-	public void  run() {
-		while(true) {
-		if(ts.tickerCounter) {
+	public void run() {
+
+		while (ts.tickerCounter) {
 			try {
 				saleTicket();
-			} catch (InterruptedException e) {}
+			} catch (InterruptedException e) {
+			}
 		}
-		try {
-            Thread.sleep(300);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+		ts.msg(ts.timeStamp, " Ticket Counter closed");
 	}
-		}
-	
 
 }

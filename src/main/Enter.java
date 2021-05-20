@@ -1,54 +1,73 @@
 package main;
 
 import java.util.Random;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class Enter implements Runnable{
-	String gate;
-	Integer maxVisitor;
+public class Enter implements Runnable {
 
+	private String gate;
+	private Lock lock;
+	private int index = 0;
+	private int maxVisitor = 95;
+	private int visitorMuseum;
+
+	Turnstile turnstile = new Turnstile();
+	Ticket ticket;
 	TimeStamp ts;
+
 	public Enter(TimeStamp ts, String gate) {
-		this.maxVisitor = 100;
+		this.lock = new ReentrantLock();
 		this.ts = ts;
 		this.gate = gate;
 	}
-	
-	public boolean enter() throws InterruptedException {
-		
-		if(Main.ticketsEntered.size() >= maxVisitor) {
-			return false;
+
+	public synchronized void enter() {
+
+		if (Main.groupTicket.peek() != null) {
+
+			ticket = Main.groupTicket.pollFirst();
+
+			turnstile.shuffle();
+
+			for (int i = 0; i < ticket.ticketSize(); i++) {
+				visitorMuseum = Main.visitorMuseum.getAndIncrement();
+				index = Main.counter.getAndIncrement();
+
+				ts.msg(ts.timeStamp, " " + ticket.ticketId().get(i) + " entered through Turnstile " + gate
+						+ turnstile.turnstile.get(i) + ". Stay for " + ticket.duration() + " minutes");
+				
+			}
+			ticket.exitTime(ts.timeStamp + ticket.duration());
+			ticket.timeEnter(ts.timeStamp);
+			Main.ticketsEntered.add(ticket);
+
+			System.out.println("Visitors in Museum: " + visitorMuseum + " Visitors has entered: " + index);
+
 		}
-		
-		int turnstile = new Random().nextInt(4) + 1;
-		Visitor visitor = Main.visitors.pollFirst();
-		
-		if (visitor == null) {
-			return false;
-		}
-		
-		String id = ts.fd.format(visitor.id);
-		String hr = ts.ft.format(ts.timeStamp/60);
-		String min = ts.ft.format(ts.timeStamp%60);
-		
-		System.out.println("["+hr+":"+min+"]"+" T" + id + " entered through Turnstile "+ 
-		gate + turnstile + ". Stay for " + visitor.duration + " minutes");
-		
-		visitor.exitTime = ts.timeStamp + visitor.duration;
-		Main.ticketsEntered.add(visitor);
-		return true;
+
 	}
+
 	@Override
 	public void run() {
-		while(true) {
-			if(ts.museumCounter) {
-				try {
-					enter();
-				} catch (InterruptedException e) {}
-			}
+		while (ts.museumCounter) {
+			lock.lock();
 			try {
-	            Thread.sleep(100);
-	        } catch (InterruptedException e) {}
+				if(visitorMuseum >= maxVisitor){
+					visitorMuseum = Main.visitorMuseum.get();
+				}
+				else if (ts.timeStamp >= ts.openMuseum && !Main.groupTicket.isEmpty()) {
+					enter();
+				}
+				int ran = new Random().nextInt(4) + 1;
+				int ran2 = new Random().nextInt(100) + 1;
+				Thread.sleep((100 * ran + ran2));
+			} catch (InterruptedException e) {
+			} finally {
+				lock.unlock();
+			}
 		}
+		ts.msg(ts.timeStamp, " Museum entrance" + gate + " counter closed");
 	}
 
 }

@@ -1,45 +1,85 @@
 package main;
 
 import java.util.Random;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Exit implements Runnable {
-	String gate;
+
+	private Lock lock;
+	private String gate;
+	private int visitorMuseum;
+
+	Ticket ticket;
+	Turnstile turnstile = new Turnstile();
 
 	TimeStamp ts;
 
 	public Exit(TimeStamp ts, String gate) {
+		this.lock = new ReentrantLock();
 		this.ts = ts;
 		this.gate = gate;
 	}
 
-	public void exit() {
-		while (true) {
-			int turnstile = new Random().nextInt(4) + 1;
-			Visitor visitor = Main.ticketsEntered.peek();
-			if (visitor == null) {
-				break;
-			}
-			if (visitor.exitTime < ts.timeStamp) {
-				break;
+	public synchronized void exit() {
+
+		if (ts.timeStamp >= (ts.closedMuseum - 30)) {
+
+			System.out.println("Museum start to closed, visitors are to leave.");
+
+			ticket = Main.ticketsEntered.poll();
+
+			for (int i = 0; i < ticket.ticketSize(); i++) {
+
+				visitorMuseum = Main.visitorMuseum.getAndDecrement();
+
+				ts.msg(ts.timeStamp, " " + ticket.ticketId().get(i) + " exited through Turnstile " + gate
+						+ turnstile.turnstile.get(i));
+
 			}
 
-			if (ts.timeStamp >= visitor.exitTime) {
+			System.out.println("Visitors in Museum: " + visitorMuseum);
 
-				String id = ts.fd.format(visitor.id);
-				String hr = ts.ft.format(ts.timeStamp / 60);
-				String min = ts.ft.format(ts.timeStamp % 60);
+		} else if (ts.timeStamp >= Main.ticketsEntered.peek().retriveExitTime()
+				&& ts.timeStamp < (ts.closedMuseum - 30)) {
 
-				System.out.println("["+hr+":"+min+"]"+" T" + id + " exited  through Turnstile " + gate + turnstile);
-				Main.ticketsEntered.poll();
+			ticket = Main.ticketsEntered.poll();
+
+			turnstile.shuffle();
+
+			for (int i = 0; i < ticket.ticketSize(); i++) {
+
+				visitorMuseum = Main.visitorMuseum.getAndDecrement();
+
+				ts.msg(ts.timeStamp, " " + ticket.ticketId().get(i) + " exited through Turnstile " + gate
+						+ turnstile.turnstile.get(i));
+
 			}
+
+			System.out.println("Visitors in Museum: " + visitorMuseum);
+			
 		}
+
 	}
 
 	@Override
 	public void run() {
-		while (true) {
-			exit();
+		while (ts.museumCounter) {
+			lock.lock();
+			try {
+				if (ts.timeStamp >= ts.openMuseum && !Main.ticketsEntered.isEmpty()) {
+					exit();
+				}
+				int ran = new Random().nextInt(4) + 1;
+				int ran2 = new Random().nextInt(100) + 1;
+				Thread.sleep((100 * ran + ran2));
+			} catch (InterruptedException e) {
+			} finally {
+				lock.unlock();
+			}
 		}
+		System.out.println("Visitors in Museum: "+ (Main.visitorMuseum.get() - 1));
+		ts.msg(ts.timeStamp, " Museum exit" + gate + " counter closed");
 	}
 
 }
