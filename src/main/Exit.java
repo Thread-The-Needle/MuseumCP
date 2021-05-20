@@ -79,7 +79,7 @@ public class Exit implements Runnable {
 			}
 		}
 		System.out.println("Visitors in Museum: "+ (Main.visitorMuseum.get() - 1));
-		ts.msg(ts.timeStamp, " Museum exit" + gate + " counter closed");
+		ts.msg(ts.timeStamp, " Museum exit " + gate + " counter closed");
 	}
 
 }
