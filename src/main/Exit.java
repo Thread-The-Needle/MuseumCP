@@ -8,7 +8,6 @@ public class Exit implements Runnable {
 
 	private Lock lock;
 	private String gate;
-	private int visitorMuseum;
 
 	Ticket ticket;
 	Turnstile turnstile = new Turnstile();
@@ -31,14 +30,14 @@ public class Exit implements Runnable {
 
 			for (int i = 0; i < ticket.ticketSize(); i++) {
 
-				visitorMuseum = Main.visitorMuseum.getAndDecrement();
+				Main.visitorMuseum.getAndDecrement();
 
 				ts.msg(ts.timeStamp, " " + ticket.ticketId().get(i) + " exited through Turnstile " + gate
-						+ turnstile.turnstile.get(i));
+						+ turnstile.turnstile.get(i%4));
 
 			}
 
-			System.out.println("Visitors in Museum: " + visitorMuseum);
+			System.out.println("Visitors in Museum: " + Main.visitorMuseum);
 
 		} else if (ts.timeStamp >= Main.ticketsEntered.peek().retriveExitTime()
 				&& ts.timeStamp < (ts.closedMuseum - 30)) {
@@ -49,14 +48,14 @@ public class Exit implements Runnable {
 
 			for (int i = 0; i < ticket.ticketSize(); i++) {
 
-				visitorMuseum = Main.visitorMuseum.getAndDecrement();
+				Main.visitorMuseum.getAndDecrement();
 
 				ts.msg(ts.timeStamp, " " + ticket.ticketId().get(i) + " exited through Turnstile " + gate
-						+ turnstile.turnstile.get(i));
+						+ turnstile.turnstile.get(i%4));
 
 			}
 
-			System.out.println("Visitors in Museum: " + visitorMuseum);
+			System.out.println("Visitors in Museum: " + Main.visitorMuseum);
 			
 		}
 

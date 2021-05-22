@@ -10,8 +10,9 @@ public class Main {
 	
 	static LinkedList<Ticket> groupTicket = new LinkedList<>();
 	static PriorityBlockingQueue<Ticket> ticketsEntered = new PriorityBlockingQueue<>();
-	static volatile AtomicInteger counter = new AtomicInteger(1);
-	static volatile AtomicInteger visitorMuseum = new AtomicInteger(1);
+	static volatile AtomicInteger counter = new AtomicInteger(0);
+	static volatile AtomicInteger visitorMuseum = new AtomicInteger(0);
+	static volatile AtomicInteger totalTicket = new AtomicInteger(0);
 	
 	
 	public static void main(String[] args) throws InterruptedException {

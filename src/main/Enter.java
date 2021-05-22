@@ -8,7 +8,6 @@ public class Enter implements Runnable {
 
 	private String gate;
 	private Lock lock;
-	private int index = 0;
 	private int maxVisitor = 94;
 	private int visitorMuseum;
 
@@ -31,21 +30,21 @@ public class Enter implements Runnable {
 			turnstile.shuffle();
 
 			for (int i = 0; i < ticket.ticketSize(); i++) {
-				visitorMuseum = Main.visitorMuseum.getAndIncrement();
-				index = Main.counter.getAndIncrement();
+				Main.visitorMuseum.getAndIncrement();
+				Main.counter.getAndIncrement();
 
 				ts.msg(ts.timeStamp, " " + ticket.ticketId().get(i) + " entered through Turnstile " + gate
-						+ turnstile.turnstile.get(i) + ". Stay for " + ticket.duration() + " minutes");
-				
+						+ turnstile.turnstile.get(i%4) + ". Stay for " + ticket.duration() + " minutes");
+
 			}
 			ticket.exitTime(ts.timeStamp + ticket.duration());
 			ticket.timeEnter(ts.timeStamp);
 			Main.ticketsEntered.add(ticket);
 
-			System.out.println("Visitors in Museum: " + visitorMuseum + " Visitors has entered: " + index);
+			System.out.println("Visitors in Museum: " + Main.visitorMuseum + " Visitors has entered: " + Main.counter);
 
 		}
-
+		visitorMuseum = Main.visitorMuseum.get();
 	}
 
 	@Override
@@ -53,10 +52,9 @@ public class Enter implements Runnable {
 		while (ts.museumCounter) {
 			lock.lock();
 			try {
-				if(visitorMuseum >= maxVisitor){
+				if (visitorMuseum >= maxVisitor) {
 					visitorMuseum = Main.visitorMuseum.get();
-				}
-				else if (ts.timeStamp >= ts.openMuseum && !Main.groupTicket.isEmpty()) {
+				} else if (ts.timeStamp >= ts.openMuseum && !Main.groupTicket.isEmpty()) {
 					enter();
 				}
 				int ran = new Random().nextInt(4) + 1;

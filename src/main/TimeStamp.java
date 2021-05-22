@@ -38,10 +38,6 @@ public class TimeStamp implements Runnable{
 				museumCounter = false;
 			}
 
-			if(timeStamp==closedMuseum){
-				System.out.println("Visitors in Museum: "+ (Main.visitorMuseum.get() - 1));
-			}
-
 			try {
 				Thread.sleep(300);
 			}catch (InterruptedException ex) {}
