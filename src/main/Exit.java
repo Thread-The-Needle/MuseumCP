@@ -30,14 +30,16 @@ public class Exit implements Runnable {
 
 			for (int i = 0; i < ticket.ticketSize(); i++) {
 
-				Main.visitorMuseum.getAndDecrement();
+				Main.visitorInMuseum.getAndDecrement();
 
-				ts.msg(ts.timeStamp, " " + ticket.ticketId().get(i) + " exited through Turnstile " + gate
-						+ turnstile.turnstile.get(i%4));
+				String text = (" " + ticket.ticketId().get(i) + " exited through Turnstile " + gate
+				+ turnstile.turnstile.get(i%4));
+				String msg = String.format("[%02d:%02d]" + text + "\n", ts.timeStamp / 60, ts.timeStamp % 60);
+
+				Main.theText.append(msg);
 
 			}
 
-			System.out.println("Visitors in Museum: " + Main.visitorMuseum);
 
 		} else if (ts.timeStamp >= Main.ticketsEntered.peek().retriveExitTime()
 				&& ts.timeStamp < (ts.closedMuseum - 30)) {
@@ -48,14 +50,15 @@ public class Exit implements Runnable {
 
 			for (int i = 0; i < ticket.ticketSize(); i++) {
 
-				Main.visitorMuseum.getAndDecrement();
+				Main.visitorInMuseum.getAndDecrement();
 
-				ts.msg(ts.timeStamp, " " + ticket.ticketId().get(i) + " exited through Turnstile " + gate
-						+ turnstile.turnstile.get(i%4));
+				String text = (" " + ticket.ticketId().get(i) + " exited through Turnstile " + gate
+				+ turnstile.turnstile.get(i%4));
+				String msg = String.format("[%02d%02d]" + text + "\n", ts.timeStamp / 60, ts.timeStamp % 60);
+
+				Main.theText.append(msg);
 
 			}
-
-			System.out.println("Visitors in Museum: " + Main.visitorMuseum);
 			
 		}
 
@@ -77,7 +80,6 @@ public class Exit implements Runnable {
 				lock.unlock();
 			}
 		}
-		ts.msg(ts.timeStamp, " Museum exit " + gate + " counter closed");
 	}
 
 }

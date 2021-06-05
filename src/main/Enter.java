@@ -8,7 +8,7 @@ public class Enter implements Runnable {
 
 	private String gate;
 	private Lock lock;
-	private int maxVisitor = 94;
+	private int maxVisitor = Main.mainVisitorInMuseum - 6;
 	private int visitorMuseum;
 
 	Turnstile turnstile = new Turnstile();
@@ -30,21 +30,22 @@ public class Enter implements Runnable {
 			turnstile.shuffle();
 
 			for (int i = 0; i < ticket.ticketSize(); i++) {
-				Main.visitorMuseum.getAndIncrement();
+
+				Main.visitorInMuseum.getAndIncrement();
 				Main.counter.getAndIncrement();
 
-				ts.msg(ts.timeStamp, " " + ticket.ticketId().get(i) + " entered through Turnstile " + gate
-						+ turnstile.turnstile.get(i%4) + ". Stay for " + ticket.duration() + " minutes");
+				String text = (" " + ticket.ticketId().get(i) + " entered through Turnstile " + gate
+				+ turnstile.turnstile.get(i % 4) + ". Stay for " + ticket.duration() + " minutes");
+				String msg = String.format("[%02d%02d]" + text + "\n", ts.timeStamp / 60, ts.timeStamp % 60);
 
+				Main.theText.append(msg);
 			}
 			ticket.exitTime(ts.timeStamp + ticket.duration());
 			ticket.timeEnter(ts.timeStamp);
 			Main.ticketsEntered.add(ticket);
 
-			System.out.println("Visitors in Museum: " + Main.visitorMuseum + " Visitors has entered: " + Main.counter);
-
 		}
-		visitorMuseum = Main.visitorMuseum.get();
+		visitorMuseum = Main.visitorInMuseum.get();
 	}
 
 	@Override
@@ -52,8 +53,12 @@ public class Enter implements Runnable {
 		while (ts.museumCounter) {
 			lock.lock();
 			try {
+
+				Main.visMuseumText.setText(String.format("%d", Main.visitorInMuseum.get()));
+				Main.totVisText.setText(String.format("%d", Main.counter.get()));
+
 				if (visitorMuseum >= maxVisitor) {
-					visitorMuseum = Main.visitorMuseum.get();
+					visitorMuseum = Main.visitorInMuseum.get();
 				} else if (ts.timeStamp >= ts.openMuseum && !Main.groupTicket.isEmpty()) {
 					enter();
 				}
@@ -65,7 +70,6 @@ public class Enter implements Runnable {
 				lock.unlock();
 			}
 		}
-		ts.msg(ts.timeStamp, " Museum entrance " + gate + " counter closed");
 	}
 
 }

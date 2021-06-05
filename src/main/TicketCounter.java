@@ -10,7 +10,7 @@ public class TicketCounter implements Runnable {
 	private String groupID;
 	private int ticketSold;
 	private int ranVisitor;
-	private int ticketLimit = 900;
+	private int ticketLimit = Main.mainTotalTicket;
 	private int ranTime;
 	private int duration;
 	private LinkedList<String> ticketID;
@@ -41,12 +41,16 @@ public class TicketCounter implements Runnable {
 				id = "T" + fd.format(ticketSold);
 				ticketID.add(id);
 				Main.totalTicket.getAndIncrement();
+				Main.ticketCounter.setText(String.format("%d", Main.totalTicket.get()));
 			}
 
 			Main.groupTicket.add(new Ticket(ticketID, ts.timeStamp, duration));
 			groupID = Main.groupTicket.getLast().ticketID().replace("[", "").replace("]", "");
 
-			ts.msg(ts.timeStamp, (ranVisitor == 1 ? " Ticket " : " Tickets ") + groupID + " sold");
+			String text = ((ranVisitor == 1 ? " Ticket " : " Tickets ") + groupID + " sold");
+			String msg = String.format("[%02d%02d]" + text + "\n", ts.timeStamp / 60, ts.timeStamp % 60);
+
+			Main.theText.append(msg);
 			Thread.sleep((ranTime * 300));
 		}
 	}
@@ -60,7 +64,6 @@ public class TicketCounter implements Runnable {
 			} catch (InterruptedException e) {
 			}
 		}
-		ts.msg(ts.timeStamp, " Ticket Counter closed");
 	}
 
 }
