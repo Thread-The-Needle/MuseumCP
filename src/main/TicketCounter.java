@@ -64,6 +64,7 @@ public class TicketCounter implements Runnable {
 			} catch (InterruptedException e) {
 			}
 		}
+		ts.msg(ts.timeStamp, " Ticket Counter closed");
 	}
 
 }

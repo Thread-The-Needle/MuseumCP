@@ -70,6 +70,7 @@ public class Enter implements Runnable {
 				lock.unlock();
 			}
 		}
+		ts.msg(ts.timeStamp, " Museum entrance " + gate + " counter closed");
 	}
 
 }

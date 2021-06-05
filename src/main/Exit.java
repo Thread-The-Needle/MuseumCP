@@ -80,6 +80,7 @@ public class Exit implements Runnable {
 				lock.unlock();
 			}
 		}
+		ts.msg(ts.timeStamp, " Museum exit " + gate + " counter closed");
 	}
 
 }

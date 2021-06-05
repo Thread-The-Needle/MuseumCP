@@ -48,5 +48,9 @@ public class TimeStamp implements Runnable{
 	tickerCounter = false;
 	museumCounter = false;
 	}
+	
+	public void msg(int m, String t) {
+		System.out.printf("[%02d:%02d]"+t+"\n", m/60, m%60 );
+	}
 
 }

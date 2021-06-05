@@ -31,14 +31,14 @@ import javax.swing.text.DefaultCaret;
 
 public class Main {
 
-	static LinkedList<Ticket> groupTicket = new LinkedList<>();
-	static PriorityBlockingQueue<Ticket> ticketsEntered = new PriorityBlockingQueue<>();
-	static volatile AtomicInteger counter = new AtomicInteger(0);
-	static volatile AtomicInteger visitorInMuseum = new AtomicInteger(0);
-	static volatile AtomicInteger totalTicket = new AtomicInteger(0);
+	static LinkedList<Ticket> groupTicket;
+	static PriorityBlockingQueue<Ticket> ticketsEntered;
+	static volatile AtomicInteger counter;
+	static volatile AtomicInteger visitorInMuseum;
+	static volatile AtomicInteger totalTicket;
 	static int mainTotalTicket, mainOpenTime, mainCloseTime, mainVisitorInMuseum;
 	static boolean startnStop;
-	static ExecutorService executor = Executors.newFixedThreadPool(6);;
+	static ExecutorService executor;
 
 	static JScrollPane theScroller;
 	static JFrame theFrame, qFrame;
@@ -75,6 +75,8 @@ public class Main {
 		closeTimeCT = new JTextField("18");
 		okButton = new JButton("OK");
 
+		ticketsEntered = new PriorityBlockingQueue<>();
+		groupTicket = new LinkedList<>();
 		counter = new AtomicInteger(0);
 		visitorInMuseum = new AtomicInteger(0);
 		totalTicket = new AtomicInteger(0);
@@ -178,6 +180,7 @@ public class Main {
 				startButton.setEnabled(true);
 				stopButton.setEnabled(false);
 				theText.append("Museum simulator closed");
+				executor.shutdownNow();
 			}
 		});
 
