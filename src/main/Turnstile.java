@@ -13,6 +13,7 @@ public class Turnstile {
         turnstile.add("4");
     }
 
+    //shuffle the turnstile so visitor can enter at random
     public void shuffle(){
         Collections.shuffle(turnstile, new Random(10));
     }

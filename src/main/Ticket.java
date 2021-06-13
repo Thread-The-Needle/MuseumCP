@@ -3,15 +3,12 @@ package main;
 import java.util.LinkedList;
 
 public class Ticket implements Comparable<Ticket>{
-    // public LinkedList<Visitor> visitor;
+    //data structure for ticket
     private LinkedList<String> id;
     private int time;
     private int duration;
     private int exitTime;
 
-    // public Ticket(LinkedList<Visitor> visitor){
-    //     this.visitor = visitor;
-    // }
     public Ticket(LinkedList<String> id, int time, int duration){
         this.duration = duration;
 		this.id = id;
@@ -55,6 +52,7 @@ public class Ticket implements Comparable<Ticket>{
         return this.id;
     }
 
+    //this to campare the exit time
     @Override
     public int compareTo(Ticket o) {
         return exitTime - o.exitTime;

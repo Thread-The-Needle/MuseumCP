@@ -22,40 +22,47 @@ public class Exit implements Runnable {
 
 	public synchronized void exit() {
 
+		//if 30 min before museum close, will force the visitors to exit
 		if (ts.timeStamp >= (ts.closedMuseum - 30)) {
 
-			System.out.println("Museum start to closed, visitors are to leave.");
-
+			//get and delete the first data from list ticketEntered
 			ticket = Main.ticketsEntered.poll();
 
 			for (int i = 0; i < ticket.ticketSize(); i++) {
 
+				//decrement the counter visitor in museum
 				Main.visitorInMuseum.getAndDecrement();
 
 				String text = (" " + ticket.ticketId().get(i) + " exited through Turnstile " + gate
 				+ turnstile.turnstile.get(i%4));
 				String msg = String.format("[%02d:%02d]" + text + "\n", ts.timeStamp / 60, ts.timeStamp % 60);
-
+				//output gui
 				Main.theText.append(msg);
 
 			}
 
 
-		} else if (ts.timeStamp >= Main.ticketsEntered.peek().retriveExitTime()
+		} 
+		//normal exit for visitor according to their stay time
+		else if (ts.timeStamp >= Main.ticketsEntered.peek().retriveExitTime()
 				&& ts.timeStamp < (ts.closedMuseum - 30)) {
 
+			//get and delete the first data from list ticketEntered
 			ticket = Main.ticketsEntered.poll();
 
+			//shuffle the turnstile so visitor can enter at random
 			turnstile.shuffle();
 
 			for (int i = 0; i < ticket.ticketSize(); i++) {
 
+				//decrement the counter visitor in museum
 				Main.visitorInMuseum.getAndDecrement();
 
 				String text = (" " + ticket.ticketId().get(i) + " exited through Turnstile " + gate
 				+ turnstile.turnstile.get(i%4));
 				String msg = String.format("[%02d%02d]" + text + "\n", ts.timeStamp / 60, ts.timeStamp % 60);
 
+				//output gui
 				Main.theText.append(msg);
 
 			}
@@ -80,7 +87,9 @@ public class Exit implements Runnable {
 				lock.unlock();
 			}
 		}
-		ts.msg(ts.timeStamp, " Museum exit " + gate + " counter closed");
+		//output to gui terminal to say museum close
+		String closemsg = String.format("[%02d%02d]  Museum exit " + gate + " counter closed" + "\n", ts.timeStamp / 60, ts.timeStamp % 60);
+		Main.theText.append(closemsg);
 	}
 
 }

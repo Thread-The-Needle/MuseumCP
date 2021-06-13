@@ -29,6 +29,7 @@ public class TimeStamp implements Runnable{
 	public void run() {
 		int i = openSale;
 		while(Main.startnStop && i<=closedMuseum){
+			//this timestamp will set the state to close counter ticket and museum
 			timeStamp = i;
 			i++;
 			Main.timeText.setText(String.format("%02d%02d", timeStamp/60, timeStamp%60));

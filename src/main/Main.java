@@ -61,6 +61,7 @@ public class Main {
 		return t;
 	}
 
+	//4. Gui for input.
 	public void caseGUI() {
 		qFrame = new JFrame("Museum Input test Case");
 		q1Panel = new JPanel();
@@ -86,6 +87,7 @@ public class Main {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
+				//5. if they click ok button. All variable will be set a new
 				mainOpenTime = Integer.parseInt(openTimeCT.getText());
 				mainCloseTime = Integer.parseInt(closeTimeCT.getText());
 				mainTotalTicket = Integer.parseInt(totalTicketCT.getText());
@@ -96,6 +98,7 @@ public class Main {
 				theText.setText(null);
 				qFrame.dispose();
 
+				//6. and all the thread will be execute
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
@@ -107,6 +110,7 @@ public class Main {
 						Exit exe = new Exit(ts, "EE");
 						Exit exw = new Exit(ts, "WE");
 
+						//all thread will run at the same time using while loop and will close after the time thread finished
 						executor.execute((Runnable) ts);
 						executor.execute((Runnable) tk);
 						executor.execute((Runnable) etn);
@@ -143,6 +147,7 @@ public class Main {
 		qFrame.setVisible(true);
 	}
 
+	//2. GUI code for first page
 	public void museumGUI() {
 
 		theFrame = new JFrame("Museum Simulator");
@@ -169,6 +174,7 @@ public class Main {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				startnStop = false;
+				//3. If click start button a new Gui page will be open
 				new Main().caseGUI();
 			}
 		});
@@ -179,7 +185,7 @@ public class Main {
 				startnStop = false;
 				startButton.setEnabled(true);
 				stopButton.setEnabled(false);
-				theText.append("Museum simulator closed");
+				theText.append("Museum simulator closed\n");
 				executor.shutdownNow();
 			}
 		});
@@ -208,6 +214,7 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
+		//1: will open the gui
 		new Main().museumGUI();
 	}
 }
